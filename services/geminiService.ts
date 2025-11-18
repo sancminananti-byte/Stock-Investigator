@@ -1,16 +1,15 @@
+
 import { GoogleGenAI } from "@google/genai";
 import type { StockAnalysis, GroundingSource } from '../types';
 
-const getApiKey = (): string => {
+export const analyzeStock = async (ticker: string): Promise<{ analysisData: StockAnalysis, sourcesData: GroundingSource[] }> => {
   const apiKey = process.env.API_KEY;
   if (!apiKey) {
-    throw new Error("API_KEY environment variable not set.");
+    console.error("API_KEY environment variable not set.");
+    throw new Error("Gemini API 키가 설정되지 않았습니다. Vercel과 같은 호스팅 환경에 배포하는 경우, 클라이언트 측에서 접근 가능하도록 환경 변수를 올바르게 설정해야 합니다. 보안상의 이유로 API 키를 클라이언트 코드에 노출하는 것은 권장되지 않습니다.");
   }
-  return apiKey;
-};
 
-export const analyzeStock = async (ticker: string): Promise<{ analysisData: StockAnalysis, sourcesData: GroundingSource[] }> => {
-  const ai = new GoogleGenAI({ apiKey: getApiKey() });
+  const ai = new GoogleGenAI({ apiKey });
   
   const prompt = `
     당신은 전문 금융 분석가입니다. 티커 심볼 '${ticker}'의 주식을 분석해주세요.
@@ -81,6 +80,9 @@ export const analyzeStock = async (ticker: string): Promise<{ analysisData: Stoc
 
   } catch (error) {
     console.error("Error analyzing stock:", error);
-    throw new Error("Failed to parse analysis data from the AI. The stock ticker may be invalid or the service may be temporarily unavailable.");
+    if (error instanceof Error && (error.message.includes("API key not valid") || error.message.includes("API_KEY_INVALID"))) {
+         throw new Error("제공된 Gemini API 키가 유효하지 않습니다. 키를 확인하고 다시 시도해주세요.");
+    }
+    throw new Error("AI 분석 데이터를 가져오는 데 실패했습니다. 종목 코드가 유효하지 않거나 서비스가 일시적으로 사용 불가능할 수 있습니다.");
   }
 };

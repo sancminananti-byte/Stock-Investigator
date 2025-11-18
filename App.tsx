@@ -36,7 +36,11 @@ const App: React.FC = () => {
       }
     } catch (err) {
       console.error(err);
-      setError('분석 데이터를 가져오는 데 실패했습니다. 잠시 후 다시 시도해주세요.');
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('분석 데이터를 가져오는 데 실패했습니다. 잠시 후 다시 시도해주세요.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -84,4 +88,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-   
