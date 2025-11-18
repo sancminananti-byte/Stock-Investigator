@@ -97,10 +97,10 @@ export const AnalysisDisplay: React.FC<{ analysis: StockAnalysis, sources: Groun
             <button
                 onClick={handleExport}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-red-500"
-                aria-label="Export analysis as PNG"
+                aria-label="분석결과 이미지로 저장"
             >
                 <ImageIcon />
-                PNG로 내보내기
+                분석결과 이미지로 저장
             </button>
         </div>
 
