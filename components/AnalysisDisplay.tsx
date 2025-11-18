@@ -4,7 +4,6 @@ import { AnalystRating, PriceChange } from '../types';
 
 // Add declarations for CDN-loaded libraries to satisfy TypeScript
 declare const html2canvas: any;
-declare const jspdf: any;
 
 const InfoCard: React.FC<{ title: string; children: React.ReactNode; icon: React.ReactNode }> = ({ title, children, icon }) => (
   <div className="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700">
@@ -23,7 +22,6 @@ const RatingIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 
 const ProsConsIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" /></svg>;
 const SourceIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>;
 const ImageIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>;
-const FileIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>;
 
 
 const PriceDisplay: React.FC<{ price: number, change: PriceChange }> = ({ price, change }) => {
@@ -73,7 +71,7 @@ const RatingDisplay: React.FC<{ rating: AnalystRating }> = ({ rating }) => {
 export const AnalysisDisplay: React.FC<{ analysis: StockAnalysis, sources: GroundingSource[] }> = ({ analysis, sources }) => {
   const analysisRef = useRef<HTMLDivElement>(null);
 
-  const handleExport = async (format: 'png' | 'pdf') => {
+  const handleExport = async () => {
     const element = analysisRef.current;
     if (!element) return;
     
@@ -84,60 +82,25 @@ export const AnalysisDisplay: React.FC<{ analysis: StockAnalysis, sources: Groun
         useCORS: true,
     });
     
-    if (format === 'png') {
-        const image = canvas.toDataURL('image/png', 1.0);
-        const link = document.createElement('a');
-        link.href = image;
-        link.download = `${analysis.ticker}_analysis.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    } else if (format === 'pdf') {
-        const image = canvas.toDataURL('image/png');
-        const pdf = new jspdf.jsPDF({
-            orientation: 'p',
-            unit: 'mm',
-            format: 'a4',
-        });
-        const imgProps = pdf.getImageProperties(image);
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        let heightLeft = pdfHeight;
-        let position = 0;
-
-        pdf.addImage(image, 'PNG', 0, position, pdfWidth, pdfHeight);
-        heightLeft -= pageHeight;
-
-        while (heightLeft > 0) {
-            position -= pageHeight;
-            pdf.addPage();
-            pdf.addImage(image, 'PNG', 0, position, pdfWidth, pdfHeight);
-            heightLeft -= pageHeight;
-        }
-
-        pdf.save(`${analysis.ticker}_analysis.pdf`);
-    }
+    const image = canvas.toDataURL('image/png', 1.0);
+    const link = document.createElement('a');
+    link.href = image;
+    link.download = `${analysis.ticker}_analysis.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
     <div className="space-y-4 animate-fade-in">
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-center">
             <button
-                onClick={() => handleExport('png')}
-                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-blue-500"
+                onClick={handleExport}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-red-500"
                 aria-label="Export analysis as PNG"
             >
                 <ImageIcon />
                 PNG로 내보내기
-            </button>
-            <button
-                onClick={() => handleExport('pdf')}
-                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-blue-500"
-                aria-label="Export analysis as PDF"
-            >
-                <FileIcon />
-                PDF로 내보내기
             </button>
         </div>
 
