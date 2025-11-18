@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>종목분석기 (Stock Analyzer)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'gray-900': '#121212',
+              'gray-800': '#1e1e1e',
+              'gray-700': '#2d2d2d',
+              'gray-600': '#444444',
+            }
+          }
+        }
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0"
+  }
+}
+</script>
+</head>
+  <body class="h-full bg-gray-900 text-gray-100 dark">
+    <div id="root" class="h-full"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
+   

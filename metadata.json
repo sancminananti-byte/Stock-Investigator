@@ -1,0 +1,5 @@
+{
+  "name": "종목분석기 (Stock Analyzer)",
+  "description": "Enter a stock ticker to get a comprehensive analysis powered by Gemini and Google Search. The app provides company summaries, financial highlights, news analysis, and analyst ratings.",
+  "requestFramePermissions": []
+}
